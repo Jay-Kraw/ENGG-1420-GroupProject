@@ -4,7 +4,7 @@ public class Workshop extends Events {
 
 
 
-    public String gettopic() {
+    public String getTopic() {
         return topic;
     }
 

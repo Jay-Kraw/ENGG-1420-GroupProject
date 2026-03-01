@@ -5,22 +5,50 @@ public class MainRun {
 
     public static void main(String[] args) {
         MainRun program = new MainRun();// this allows us to create users or events with a method
-        User myNewUser = program.createUser();
-        System.out.println("User Created Successfully!");
-        System.out.println("ID: " + myNewUser.getEmail());
-
     }
 
 
-    public User createUser() {
+    public String[] userBaseInfo() {
+        String[] x = new String[3];
         Scanner input = new Scanner(System.in);
-        String userId = String.valueOf(((int) (Math.random() * (999999 - 10000 + 1) + 10000)));
+        x[0] = String.valueOf(((int) (Math.random() * (999999 - 10000 + 1) + 10000)));
         System.out.println("Enter your Username");
-        String userName = input.nextLine();
+        x[1] = input.nextLine();
         System.out.println("Enter your Email");
-        String userEmail = input.nextLine();
+        x[2]= input.nextLine();
 
-        return new User(userId, userName, userEmail, "Guest");
+        return x;
+    }
+
+    public Student createStudent(){
+        String []x = userBaseInfo();
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter your StudentId");
+        String ID = input.nextLine();
+        System.out.println("Enter your Program");
+        String program= input.nextLine();
+        return new Student(x[0],x[1],x[2],ID,program);
+
+    }
+
+    public Staff createStaff(){
+        String []x = userBaseInfo();
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter your StaffId");
+        String ID = input.nextLine();
+        System.out.println("Enter your Department");
+        String department= input.nextLine();
+        return new Staff(x[0],x[1],x[2],ID,department);
+    }
+
+    public Guest createGuest(){
+        String []x = userBaseInfo();
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter your GuestCode");
+        String ID = input.nextLine();
+        System.out.println("Enter your ExpiryDate");
+        String expiryDate = input.nextLine();
+        return new Guest(x[0],x[1],x[2],ID, expiryDate);
     }
 
     public Concert createConcert() {

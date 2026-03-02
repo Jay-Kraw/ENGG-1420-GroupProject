@@ -1,9 +1,11 @@
+package model;
+
 public class Student extends User {
     private String studentId;
     private String program;
 
     public Student(String userId, String name, String email, String studentId, String program) {
-        super(userId, name, email, "Student");
+        super(userId, name, email, "model.Student");
         this.studentId = studentId;
         this.program = program;
     }

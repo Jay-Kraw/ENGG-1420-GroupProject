@@ -1,3 +1,4 @@
+package model;
 
 public class Workshop extends Events {
     String topic;

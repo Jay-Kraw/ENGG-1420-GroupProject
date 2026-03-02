@@ -1,9 +1,11 @@
+package model;
+
 public class Guest extends User {
     private String guestCode;
     private String expiryDate;
 
     public Guest(String userId, String name, String email, String guestCode, String expiryDate) {
-        super(userId, name, email, "Guest");
+        super(userId, name, email, "model.Guest");
         this.guestCode = guestCode;
         this.expiryDate = expiryDate;
     }

@@ -2,10 +2,10 @@ package ui;
 
 import model.*;
 import service.BookingManager;
+import service.FileManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainApp {
@@ -18,21 +18,93 @@ public class MainApp {
         frame.setLayout(new BorderLayout());
 
         // =============================
-        // Shared Backend Data
+        // FILE MANAGER
         // =============================
-        BookingManager bookingManager = new BookingManager();
-        List<User> users = new ArrayList<>();
-        List<Events> events = new ArrayList<>();
+        FileManager fm = new FileManager();
+
+        List<User> users = fm.loadUsers("users.csv");
+        List<Events> events = fm.loadEvents("events.csv");
+        List<Booking> bookings = fm.loadBookings("bookings.csv", users, events);
+
+        System.out.println("Users: " + users.size());
+        System.out.println("Events: " + events.size());
+        System.out.println("Bookings: " + bookings.size());
 
         // =============================
-        // Create Panels
+        // BACKEND
+        // =============================
+        BookingManager bookingManager = new BookingManager();
+
+        for (Booking b : bookings) {
+            bookingManager.getAllBookings().add(b);
+        }
+
+        // =============================
+        // PANELS
         // =============================
         UserPanel userPanel = new UserPanel(users);
         EventPanel eventPanel = new EventPanel(events);
         BookingPanel bookingPanel = new BookingPanel(bookingManager, users, events);
+        WaitlistPanel waitlistPanel = new WaitlistPanel(bookingManager, events);
 
         // =============================
-        // Left Menu
+        // IMPORT LISTENER (FIXED)
+        // =============================
+        eventPanel.setImportListener(data -> {
+
+            System.out.println("Imported:\n" + data);
+
+            try {
+                String[] lines = data.split("\\n");
+
+                for (String line : lines) {
+
+                    String[] parts = line.split(",");
+
+                    // Ensure correct format
+                    if (parts.length >= 5) {
+
+                        String title = parts[0].trim();
+                        String dateTime = parts[1].trim();
+                        String location = parts[2].trim();
+
+                        int capacity = Integer.parseInt(parts[3].trim());
+
+                        // Handle true/false safely
+                        boolean status = parts[4].trim().equalsIgnoreCase("true");
+
+                        // Create event using YOUR constructor
+                        Events newEvent = new Events(
+                                title,
+                                dateTime,
+                                location,
+                                capacity,
+                                status
+                        );
+
+                        events.add(newEvent);
+                    }
+                }
+
+                // Refresh UI
+                eventPanel.refreshData();
+
+                JOptionPane.showMessageDialog(frame,
+                        "Events Imported Successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(frame,
+                        "Import Failed: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // =============================
+        // MENU
         // =============================
         JPanel menuPanel = new JPanel(new GridLayout(4, 1));
 
@@ -45,10 +117,9 @@ public class MainApp {
         menuPanel.add(eventButton);
         menuPanel.add(bookingButton);
         menuPanel.add(waitlistButton);
-        WaitlistPanel waitlistPanel =
-                new WaitlistPanel(bookingManager, events);
+
         // =============================
-        // Main Content Panel
+        // CONTENT
         // =============================
         JPanel contentPanel = new JPanel(new BorderLayout());
 
@@ -63,7 +134,7 @@ public class MainApp {
         frame.add(contentPanel, BorderLayout.CENTER);
 
         // =============================
-        // Button Actions
+        // BUTTON ACTIONS
         // =============================
         userButton.addActionListener(e -> {
             contentPanel.removeAll();
@@ -80,6 +151,8 @@ public class MainApp {
         });
 
         bookingButton.addActionListener(e -> {
+            bookingPanel.refreshData();
+
             contentPanel.removeAll();
             contentPanel.add(bookingPanel, BorderLayout.CENTER);
             contentPanel.revalidate();
@@ -87,11 +160,20 @@ public class MainApp {
         });
 
         waitlistButton.addActionListener(e -> {
+            waitlistPanel.refreshData();
+
             contentPanel.removeAll();
             contentPanel.add(waitlistPanel, BorderLayout.CENTER);
             contentPanel.revalidate();
             contentPanel.repaint();
         });
+
+        // =============================
+        // SAVE ON EXIT
+        // =============================
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            fm.saveBookings("bookings.csv", bookingManager.getAllBookings());
+        }));
 
         frame.setVisible(true);
     }

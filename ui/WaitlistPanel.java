@@ -23,9 +23,9 @@ public class WaitlistPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // =============================
+
         // Top Panel (Event Selector)
-        // =============================
+
         JPanel topPanel = new JPanel(new BorderLayout());
 
         eventBox = new JComboBox<>();
@@ -39,9 +39,9 @@ public class WaitlistPanel extends JPanel {
 
         add(topPanel, BorderLayout.NORTH);
 
-        // =============================
+
         // Center Panel (Lists)
-        // =============================
+
         JPanel centerPanel = new JPanel(new GridLayout(1, 2));
 
         confirmedArea = new JTextArea();
@@ -96,5 +96,8 @@ public class WaitlistPanel extends JPanel {
                             + "\n"
             );
         }
+    }
+    public void refreshData() {
+        loadEvents();
     }
 }

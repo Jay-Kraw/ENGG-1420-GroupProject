@@ -5,16 +5,28 @@ import java.util.*;
 
 public class BookingManager {
 
+    // List storing all bookings in the system
     private List<Booking> bookings = new ArrayList<>();
+
+    // NEW: List storing all events (needed for search/filter)
+    private List<Events> events = new ArrayList<>();
+
+    // Optional constructor if you want to pass events from main
+    public BookingManager(List<Events> events) {
+        this.events = events;
+    }
+
+    // Default constructor (if already used in your project)
+    public BookingManager() {}
 
     public Booking createBooking(String bookingId, User user, Events event) {
 
-        // 1️⃣ Event cancelled check
+        // Check if the event is cancelled before allowing booking
         if (event.isCancelled()) {
             throw new IllegalStateException("Event is cancelled.");
         }
 
-        // 2️⃣ Duplicate booking check
+        // Prevent duplicate bookings for the same user and event
         for (Booking b : bookings) {
             if (b.getUser().equals(user) &&
                     b.getEvent().equals(event) &&
@@ -23,7 +35,7 @@ public class BookingManager {
             }
         }
 
-        // 3️⃣ Booking limit by user type
+        // Count how many confirmed bookings the user already has
         int activeBookings = 0;
         for (Booking b : bookings) {
             if (b.getUser().equals(user) &&
@@ -32,13 +44,15 @@ public class BookingManager {
             }
         }
 
+        // Enforce booking limit based on user type
         if (activeBookings >= user.getMaxBookings()) {
             throw new IllegalStateException("User exceeded maximum confirmed bookings.");
         }
 
+        // Create new booking object
         Booking booking = new Booking(bookingId, user, event);
 
-        // 4️⃣ Capacity check
+        // If event is full → add to waitlist, otherwise confirm booking
         if (event.isFull()) {
             booking.setStatus(BookingStatus.WAITLISTED);
             event.addToWaitlist(booking);
@@ -47,22 +61,27 @@ public class BookingManager {
             event.addConfirmedBooking(booking);
         }
 
+        // Store booking in system
         bookings.add(booking);
         return booking;
     }
 
     public void cancelBooking(Booking booking) {
 
+        // If already cancelled, do nothing
         if (booking.getStatus() == BookingStatus.CANCELLED) {
             return;
         }
 
+        // Mark booking as cancelled
         booking.setStatus(BookingStatus.CANCELLED);
+
         Events event = booking.getEvent();
 
+        // Remove booking from event's confirmed list
         event.removeBooking(booking);
 
-        // 5️⃣ Automatic promotion from waitlist
+        // Automatically promote the first user from waitlist (FIFO)
         if (!event.getWaitlist().isEmpty()) {
             Booking promoted = event.getWaitlist().poll();
             promoted.setStatus(BookingStatus.CONFIRMED);
@@ -72,5 +91,54 @@ public class BookingManager {
 
     public List<Booking> getAllBookings() {
         return bookings;
+    }
+
+    // ===============================
+    // PHASE 2: SEARCH FUNCTIONALITY
+    // ===============================
+
+    // Returns all events (used for "All" filter)
+    public List<Events> getAllEvents() {
+        return events;
+    }
+
+    // Search events by title (partial + case-insensitive)
+    public List<Events> searchEventsByTitle(String keyword) {
+        List<Events> result = new ArrayList<>();
+
+        // If search box is empty, return all events
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return events;
+        }
+
+        for (Events e : events) {
+            // Convert both to lowercase for case-insensitive comparison
+            if (e.getTitle().toLowerCase().contains(keyword.toLowerCase())) {
+                result.add(e);
+            }
+        }
+
+        return result;
+    }
+
+    // Filter events based on type (Workshop, Seminar, Concert)
+    public List<Events> filterEventsByType(String type) {
+        List<Events> result = new ArrayList<>();
+
+        for (Events e : events) {
+
+            // Check event type using instanceof (clean OOP approach)
+            if (type.equalsIgnoreCase("Workshop") && e instanceof Workshop) {
+                result.add(e);
+            }
+            else if (type.equalsIgnoreCase("Seminar") && e instanceof Seminar) {
+                result.add(e);
+            }
+            else if (type.equalsIgnoreCase("Concert") && e instanceof Concert) {
+                result.add(e);
+            }
+        }
+
+        return result;
     }
 }

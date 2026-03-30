@@ -136,4 +136,8 @@ public class BookingPanel extends JPanel {
             resultArea.append("Error: " + ex.getMessage() + "\n");
         }
     }
+    public void refreshData() {
+        loadUsers();
+        loadEvents();
+    }
 }

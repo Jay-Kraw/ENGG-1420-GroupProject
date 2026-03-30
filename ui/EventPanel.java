@@ -21,11 +21,27 @@ public class EventPanel extends JPanel {
     private JComboBox<String> typeBox;
     private JTextArea displayArea;
 
+    // Search & Filter
+    private JTextField searchField;
+    private JButton searchButton;
+    private JComboBox<String> filterBox;
+    private JButton filterButton;
+
+    // ✅ IMPORT LISTENER
+    private ImportListener importListener;
+
+    public void setImportListener(ImportListener listener) {
+        this.importListener = listener;
+    }
+
     public EventPanel(List<Events> events) {
         this.events = events;
 
         setLayout(new BorderLayout());
 
+        // =========================
+        // FORM PANEL (Add Event)
+        // =========================
         JPanel formPanel = new JPanel(new GridLayout(6, 2));
 
         formPanel.add(new JLabel("Title:"));
@@ -53,13 +69,114 @@ public class EventPanel extends JPanel {
 
         add(formPanel, BorderLayout.NORTH);
 
+        // =========================
+        // DISPLAY AREA
+        // =========================
         displayArea = new JTextArea();
         displayArea.setEditable(false);
         add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
+        // =========================
+        // SEARCH + FILTER PANEL
+        // =========================
+        JPanel searchPanel = new JPanel();
+
+        searchPanel.add(new JLabel("Search Title:"));
+        searchField = new JTextField(10);
+        searchPanel.add(searchField);
+
+        searchButton = new JButton("Search");
+        searchPanel.add(searchButton);
+
+        searchPanel.add(new JLabel("Filter Type:"));
+        filterBox = new JComboBox<>(new String[]{"All", "Workshop", "Seminar", "Concert"});
+        searchPanel.add(filterBox);
+
+        filterButton = new JButton("Filter");
+        searchPanel.add(filterButton);
+
+        add(searchPanel, BorderLayout.SOUTH);
+
+        // =========================
+        // IMPORT PANEL (NEW)
+        // =========================
+        JPanel importPanel = new JPanel();
+
+        JTextField importField = new JTextField(20);
+        JButton importButton = new JButton("Import");
+
+        importPanel.add(new JLabel("Import CSV:"));
+        importPanel.add(importField);
+        importPanel.add(importButton);
+
+        add(importPanel, BorderLayout.EAST);
+
+        // =========================
+        // BUTTON ACTIONS
+        // =========================
+
+        // Add event
         addButton.addActionListener(e -> addEvent());
+
+        // Search
+        searchButton.addActionListener(e -> {
+            String keyword = searchField.getText().toLowerCase();
+
+            List<Events> results = new ArrayList<>();
+
+            for (Events event : events) {
+                if (event.getTitle().toLowerCase().contains(keyword)) {
+                    results.add(event);
+                }
+            }
+
+            displayEvents(results);
+        });
+
+        // Filter
+        filterButton.addActionListener(e -> {
+            String selectedType = (String) filterBox.getSelectedItem();
+
+            List<Events> results = new ArrayList<>();
+
+            if (selectedType.equals("All")) {
+                results = events;
+            } else {
+                for (Events event : events) {
+
+                    if (selectedType.equals("Workshop") && event instanceof Workshop) {
+                        results.add(event);
+                    }
+                    else if (selectedType.equals("Seminar") && event instanceof Seminar) {
+                        results.add(event);
+                    }
+                    else if (selectedType.equals("Concert") && event instanceof Concert) {
+                        results.add(event);
+                    }
+                }
+            }
+
+            displayEvents(results);
+        });
+
+        // Import button
+        importButton.addActionListener(e -> {
+            String data = importField.getText();
+
+            if (importListener != null) {
+                importListener.onImport(data);
+            } else {
+                JOptionPane.showMessageDialog(this, "Import listener not set!");
+            }
+        });
+
+        // Initial display
+        displayEvents();
     }
 
+    // =========================
+    // ADD EVENT
+    // =========================
     private void addEvent() {
 
         String title = titleField.getText();
@@ -69,7 +186,6 @@ public class EventPanel extends JPanel {
 
         int capacity;
 
-        // ✅ SAFE input validation
         try {
             capacity = Integer.parseInt(capacityField.getText());
         } catch (NumberFormatException ex) {
@@ -106,15 +222,21 @@ public class EventPanel extends JPanel {
         capacityField.setText("");
     }
 
+    // =========================
+    // DISPLAY METHODS
+    // =========================
     private void displayEvents() {
+        displayEvents(events);
+    }
+
+    private void displayEvents(List<Events> eventsList) {
 
         displayArea.setText("");
 
-        for (Events e : events) {
+        for (Events e : eventsList) {
 
             String extraInfo = "";
 
-            // ✅ Polymorphism display
             if (e instanceof Workshop) {
                 extraInfo = " | Topic: " + ((Workshop) e).getTopic();
             }
@@ -135,5 +257,12 @@ public class EventPanel extends JPanel {
                             "\n"
             );
         }
+    }
+
+    // =========================
+    // REFRESH (FOR MAINAPP)
+    // =========================
+    public void refreshData() {
+        displayEvents();
     }
 }

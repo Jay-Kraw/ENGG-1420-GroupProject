@@ -1,3 +1,5 @@
+import model.*;
+
 import java.util.*;
 
 public class MainRun {
@@ -68,7 +70,7 @@ public class MainRun {
 
     public Workshop CreateWorkshop() {
         String[] x = EventBaseInfo();
-        System.out.println("Enter The Workshop Topic");
+        System.out.println("Enter The model.Workshop Topic");
         String Topic = input.nextLine();
         return new Workshop(x[0], x[1], x[2], Integer.parseInt(x[3]), true, Topic);
     }

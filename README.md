@@ -1,7 +1,10 @@
 TO RUN THE PROGRAM
-Create a test project file with an SRC folder
-Add the packages "model", "service", "ui" into the SRC folder, as well as the nesiccary bookings.csv,users.csv and events.csv files
-Run the MainApp.java in the UI package file to run and see the full UI.
+Clone the repo on your machine, go to project structure|Module then click plus to add a new module and set the src folder as a Source Folder
+While still in project structure navigate to Libraries Click the plus and choose from Maven and paste the following into the window " org.junit.jupiter:junit-jupiter:5.10.0 " then click apply and save
+
+Navigate to SRC/UI and open the MainApp File and run it to run the program
+ 
+
 
 HOW TO USE THE CAMPUS BOOKING SYSTEM
 There are 4 button pannles on the left which each have a unique function

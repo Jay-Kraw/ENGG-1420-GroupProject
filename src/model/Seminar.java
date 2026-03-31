@@ -14,8 +14,8 @@ public class Seminar extends Events {
         this.speakerName = speakerName;
     }
 
-    public Seminar(String title, String dateTime, String location, int capacity, boolean status, String speakerName) {
-        super(title, dateTime, location, capacity, status);
+    public Seminar(String eventid,String title, String dateTime, String location, int capacity, boolean status, String speakerName) {
+        super(eventid,title, dateTime, location, capacity, status);
         this.speakerName = speakerName;
 
     }

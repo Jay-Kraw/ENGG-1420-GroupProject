@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Events {
 
-    private int eventId;
+    private String eventId;
     private String title;
     private String dateTime;
     private String location;
@@ -15,8 +15,8 @@ public class Events {
     protected List<Booking> confirmedBookings = new ArrayList<>();
     protected Queue<Booking> waitlist = new LinkedList<>();
 
-    public Events(String title, String dateTime, String location, int capacity, boolean status) {
-        eventId = (int) (Math.random() * ((9999 - 1000) + 1) + 1000);
+    public Events(String eventId,String title, String dateTime, String location, int capacity, boolean status) {
+        this.eventId = eventId;
         this.title = title;
         this.dateTime = dateTime;
         this.location = location;
@@ -24,11 +24,11 @@ public class Events {
         this.status = status;
     }
 
-    public int getEventId() {
+    public String getEventId() {
         return eventId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 

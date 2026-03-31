@@ -11,7 +11,6 @@ public class WaitlistPanel extends JPanel {
 
     private BookingManager bookingManager;
     private List<Events> events;
-
     private JComboBox<Events> eventBox;
     private JTextArea confirmedArea;
     private JTextArea waitlistArea;
@@ -57,6 +56,7 @@ public class WaitlistPanel extends JPanel {
 
         refreshButton.addActionListener(e -> displayRoster());
         eventBox.addActionListener(e -> displayRoster());
+        displayRoster();
     }
 
     private void loadEvents() {

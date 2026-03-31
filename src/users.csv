@@ -1,4 +1,4 @@
-userId,name,email,userType
+userId,name,email,type
 U001,Alice Smith,alice.smith@uoguelph.ca,Student
 U002,Bob Chen,bob.chen@uoguelph.ca,Student
 U003,Clara Diaz,clara.diaz@uoguelph.ca,Student
@@ -23,3 +23,5 @@ U021,Uma Roy,uma.roy@uoguelph.ca,Student
 U022,Victor Scott,victor.scott@uoguelph.ca,Student
 U023,Wendy Zhao,wendy.zhao@uoguelph.ca,Staff
 U024,Yara Mohammadi,yara.mohammadi@gmail.com,Guest
+123,Jay,Email.com,Student
+123,John,Email2.com,Student

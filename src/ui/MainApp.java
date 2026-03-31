@@ -35,8 +35,14 @@ public class MainApp {
         Scanner userScan = new Scanner(new File("src\\users.csv"/*userFile*/));
         String skip = userScan.nextLine();
         while (userScan.hasNextLine()) {
-            String line = userScan.nextLine();
+            String line = userScan.nextLine().trim();
+            if (line.isEmpty()) {
+                continue;
+            }
             String[] x = line.split(",");
+            if (x.length < 4) {
+                continue;
+            }
             String id = x[0];
             String name = x[1];
             String email = x[2];
@@ -50,8 +56,14 @@ public class MainApp {
         skip = eventsScan.nextLine();
         while (eventsScan.hasNextLine()) {
             boolean Status = false;
-            String line = eventsScan.nextLine();
+            String line = eventsScan.nextLine().trim();
+            if (line.isEmpty()) {
+                continue;
+            }
             String[] x = line.split(",", -1);
+            if (x.length < 10) {
+                continue;
+            }
             String id = x[0];
             String title = x[1];
             String datetime = x[2];
@@ -82,42 +94,41 @@ public class MainApp {
         }
         eventsScan.close();
 
-//
-//        Scanner bookScan = new Scanner(new File("src\\"+bookFile));
-//        skip = bookScan.nextLine();
-//        Boolean Status = false;
-//        while (bookScan.hasNextLine()) {
-//            String line = bookScan.nextLine();
-//            String[] x = line.split(",");
-//            String BookingID = x[0];
-//            String userId = x[1];
-//            int foundUser = -1; // Default to -1 if not found
-//            for (int i = 0; i < users.size(); i++) {
-//                if (users.get(i).getUserId().equals(userId)) {
-//                    foundUser = i;
-//                    break;
-//                }
-//            }
-//            String eventId = x[2];
-//            int foundevent = -1; // Default to -1 if not found
-//            for (int i = 0; i < events.size(); i++) {
-//                if (events.get(i).getEventId().equals(eventId)) {
-//                    foundevent = i;
-//                    break;
-//                }
-//            }
-//            String createdAt = x[3];
-//            if (x[4].equals("Active")) {
-//                Status = true;
-//            } else if (x[4].equals("Cancelled")) {
-//                Status = false;
-//            }
-//            if (foundUser != -1 && foundevent != -1) {
-//                bookingManager.createBooking(BookingID, users.get(foundUser), events.get(foundevent));
-//            }
-//            System.out.println(users.get(1).getName());
-//        }
-//        bookScan.close();
+
+        Scanner bookScan = new Scanner(new File("src\\bookings.csv"));
+        skip = bookScan.nextLine();
+        Boolean Status = false;
+        while (bookScan.hasNextLine()) {
+            String line = bookScan.nextLine();
+            String[] x = line.split(",");
+            String BookingID = x[0];
+            String userId = x[1];
+            int foundUser = -1; // Default to -1 if not found
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).getUserId().equals(userId)) {
+                    foundUser = i;
+                    break;
+                }
+            }
+            String eventId = x[2];
+            int foundevent = -1; // Default to -1 if not found
+            for (int i = 0; i < events.size(); i++) {
+                if (events.get(i).getEventId().equals(eventId)) {
+                    foundevent = i;
+                    break;
+                }
+            }
+            String createdAt = x[3];
+            if (x[4].equals("Active")) {
+                Status = true;
+            } else if (x[4].equals("Cancelled")) {
+                Status = false;
+            }
+            if (foundUser != -1 && foundevent != -1) {
+                bookingManager.createBooking(BookingID, users.get(foundUser), events.get(foundevent));
+            }
+        }
+        bookScan.close();
 
 
         // =============================

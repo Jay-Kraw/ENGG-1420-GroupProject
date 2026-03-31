@@ -11,7 +11,6 @@ public class WaitlistPanel extends JPanel {
 
     private BookingManager bookingManager;
     private List<Events> events;
-
     private JComboBox<Events> eventBox;
     private JTextArea confirmedArea;
     private JTextArea waitlistArea;

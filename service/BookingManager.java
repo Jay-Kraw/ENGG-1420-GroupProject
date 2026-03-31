@@ -26,10 +26,10 @@ public class BookingManager {
             throw new IllegalStateException("Event is cancelled.");
         }
 
-        // Prevent duplicate bookings for the same user and event
+        // Prevent duplicate bookings using IDs (safer)
         for (Booking b : bookings) {
-            if (b.getUser().equals(user) &&
-                    b.getEvent().equals(event) &&
+            if (b.getUser().getUserId() == user.getUserId() &&
+                    b.getEvent().getEventId() == event.getEventId() &&
                     b.getStatus() != BookingStatus.CANCELLED) {
                 throw new IllegalStateException("User already booked this event.");
             }

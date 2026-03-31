@@ -105,7 +105,7 @@ public class EventPanel extends JPanel {
         JTextField importField = new JTextField(20);
         JButton importButton = new JButton("Import");
 
-        importPanel.add(new JLabel("Import CSV:"));
+        importPanel.add(new JLabel("Add Event:"));
         importPanel.add(importField);
         importPanel.add(importButton);
 

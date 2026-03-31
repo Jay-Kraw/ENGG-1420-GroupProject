@@ -185,7 +185,72 @@ public class FileManager {
 
         return bookings;
     }
+    // SAVE USERS
+    public void saveUsers(String filePath, List<User> users) {
 
+        try (PrintWriter pw = new PrintWriter(new FileWriter(filePath))) {
+
+            // Header (same as input file)
+            pw.println("userId,name,email,userType");
+
+            for (User u : users) {
+                pw.println(u.getUserId() + "," +
+                        u.getName() + "," +
+                        u.getEmail() + "," +
+                        u.getType());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error saving users");
+            e.printStackTrace();
+        }
+    }
+    // SAVE EVENTS
+    public void saveEvents(String filePath, List<Events> events) {
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter(filePath))) {
+
+            // Header EXACTLY like input file
+            pw.println("eventId,title,dateTime,location,capacity,status,eventType,topic,speakerName,ageRestriction");
+
+            for (Events e : events) {
+
+                String eventId = "E" + e.getEventId();
+                String status = e.getStatus() ? "Active" : "Cancelled";
+                String type = e.getClass().getSimpleName();
+
+                String topic = "";
+                String speaker = "";
+                String age = "";
+
+                // Handle different event types
+                if (e instanceof Workshop) {
+                    topic = ((Workshop) e).getTopic();
+                }
+                else if (e instanceof Seminar) {
+                    speaker = ((Seminar) e).getSpeakerName();
+                }
+                else if (e instanceof Concert) {
+                    age = ((Concert) e).getAgeRestriction() + "+";
+                }
+
+                pw.println(eventId + "," +
+                        e.getTitle() + "," +
+                        e.getDateTime() + "," +
+                        e.getLocation() + "," +
+                        e.getCapacity() + "," +
+                        status + "," +
+                        type + "," +
+                        topic + "," +
+                        speaker + "," +
+                        age);
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error saving events");
+            ex.printStackTrace();
+        }
+    }
     // ===============================
     // SAVE BOOKINGS
     // ===============================

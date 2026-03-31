@@ -43,6 +43,7 @@ public class MainApp {
         // PANELS
         // =============================
         UserPanel userPanel = new UserPanel(users);
+
         EventPanel eventPanel = new EventPanel(events);
         BookingPanel bookingPanel = new BookingPanel(bookingManager, users, events);
         WaitlistPanel waitlistPanel = new WaitlistPanel(bookingManager, events);
@@ -173,6 +174,8 @@ public class MainApp {
         // =============================
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             fm.saveBookings("bookings.csv", bookingManager.getAllBookings());
+            fm.saveUsers("users.csv", users);
+            fm.saveEvents("events.csv", events);
         }));
 
         frame.setVisible(true);

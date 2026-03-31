@@ -50,6 +50,7 @@ public class UserPanel extends JPanel {
         add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
         addButton.addActionListener(e -> addUser());
+        displayUsers();
     }
 
     private void addUser() {
@@ -59,10 +60,38 @@ public class UserPanel extends JPanel {
         String email = emailField.getText();
         String type = (String) typeBox.getSelectedItem();
 
+        // Empty field check
+        if (id.isEmpty() || name.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all fields");
+            return;
+        }
+
+        // Duplicate check
+        for (User u : users) {
+            if (u.getUserId().equals(id)) {
+                JOptionPane.showMessageDialog(this, "User ID already exists!");
+
+                // ✅ CLEAR FIELDS ON DUPLICATE
+                idField.setText("");
+                nameField.setText("");
+                emailField.setText("");
+                typeBox.setSelectedIndex(0);
+
+                return;
+            }
+        }
+
+        // Add user
         User user = new User(id, name, email, type);
         users.add(user);
 
         displayUsers();
+
+        //  Clear fields
+        idField.setText("");
+        nameField.setText("");
+        emailField.setText("");
+        typeBox.setSelectedIndex(0);
     }
 
     private void displayUsers() {
